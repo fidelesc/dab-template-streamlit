@@ -1,22 +1,22 @@
 {
-    "properties": {
-      "project_name": {
-        "type": "string",
-        "default": "project_name",
-        "description": "Project name with no spaces and no special characters except underscore (_)",
-        "order": 1
-      },
-      "databricks_username": {
-        "type": "string",
-        "default": "databricks_user@gmail.com.br",
-        "description": "Databricks username (email)",
-        "order": 2
-      },
-      "sql_warehouse_id": {
-        "type": "string",
-        "default": "sql_warehouse_id",
-        "description": "Databricks SQL warehouse ID",
-        "order": 3
-      }
-    }
-  }
+  "properties": {
+    "project_name": {
+      "type": "string",
+      "default": "project_name",
+      "description": "Project name with no spaces and no special characters except underscore (_)",
+      "order": 1
+    },
+    "databricks_username": {
+      "type": "string",
+      "default": "databricks_user@gmail.com.br",
+      "description": "Databricks username (email)",
+      "order": 2
+    },
+    "sql_warehouse_id": {
+      "type": "string",
+      "default": "sql_warehouse_id",
+      "description": "Databricks SQL warehouse ID",
+      "order": 3
+    }
+  }
+}
