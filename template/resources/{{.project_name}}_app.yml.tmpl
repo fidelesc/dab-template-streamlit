@@ -1,0 +1,16 @@
+resources:
+  apps:
+    data_app:
+      name: "data-app"
+      description: "A Streamlit app that uses a AQL warehouse"
+
+      # The location of the source code for the app.
+      source_code_path: ../app
+
+      # The resources which this app have an access to.
+      resources:
+        - name: "sql-warehouse"
+          description: "A SQL warehouse for app to be able to work with"
+          sql_warehouse:
+            id: "{{.warehouse_id}}"
+            permission: "CAN_USE"

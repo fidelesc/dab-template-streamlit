@@ -1,0 +1,66 @@
+# This is a Databricks asset bundle definition for {{.project_name}}.
+# See https://docs.databricks.com/dev-tools/bundles/index.html for documentation.
+bundle:
+  name: {{.project_name}}
+
+variables:
+  # Declare a global policy_id variable. This ensures it is recognized throughout the bundle.
+  policy_id:
+    type: string
+    description: "The policy ID to use for the job clusters."
+    default: "XX05XX3XX0XX5XX3" #Risk Job Compute for dev environment
+
+include:
+  - resources/*.yml
+
+targets:
+  # The 'dev' target, used for development purposes.
+  # Whenever a developer deploys using 'dev', they get their own copy.
+  dev:
+    # We use 'mode: development' to make sure everything deployed to this target gets a prefix
+    # like '[dev my_user_name]'. Setting this mode also disables any schedules and
+    # automatic triggers for jobs and enables the 'development' mode for Delta Live Tables pipelines.
+    variables:
+      policy_id: "XX05XX3XX0XX5XX3"  # Job Compute Policy in Development
+    mode: development
+    default: true
+    workspace:
+      host: https://dbc-XXXXXXXX-XXXX.cloud.databricks.com
+      root_path: ~/{{.project_name}}/.bundle/${bundle.name}/${bundle.target}
+    permissions:
+    - user_name: {{.databricks_username}}  # Specify the user name
+      level: CAN_MANAGE
+    - group_name: GROUP-ADMINS  # Specify the group name
+      level: CAN_MANAGE  # Or another permission level, like CAN_RUN or CAN_VIEW
+
+  stg:
+    mode: production
+    variables:
+      policy_id: "XX05XX3XX0XX5XX3"  # Job Compute Policy in Staging
+    workspace:
+      host: https://dbc-XXXXXXXX-XXXX.cloud.databricks.com
+      root_path: /Shared/.bundle/${bundle.name}/${bundle.target}
+    run_as:
+      service_principal_name: "XcXXdXXe-0XXe-4XX4-bXX3-cXXbXX2XXcXX"
+    permissions:
+    - user_name: {{.databricks_username}}  # Specify the user name
+      level: CAN_MANAGE
+    - group_name: GROUP-ADMINS  # Specify the group name
+      level: CAN_MANAGE  # Or another permission level, like CAN_RUN or CAN_VIEW
+
+  # The 'prod' target, used for production deployment.
+  prd:
+    mode: production
+    variables:
+      policy_id: "XX05XX3XX0XX5XX3" # Job Compute in Production
+    workspace:
+      host: https://dbc-XaXX6XXa-5XXf.cloud.databricks.com
+      # We explicitly specify /Users/lucas.fideles@nuvemshop.com.br to make sure we only have a single copy.
+      root_path: /Shared/.bundle/${bundle.name}/${bundle.target}
+    run_as:
+      service_principal_name: "XcXXdXXe-0XXe-4XX4-bXX3-cXXbXX2XXcXX"
+    permissions:
+      - user_name: {{.databricks_username}}  # Specify the user name
+        level: CAN_MANAGE
+      - group_name: GROUP-ADMINS  # Specify the group name
+        level: CAN_MANAGE  # Or another permission level, like CAN_RUN or CAN_VIEW

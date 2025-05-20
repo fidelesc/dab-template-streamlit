@@ -1,0 +1,41 @@
+# The main job for {{.project_name}}
+  resources:
+    jobs:
+      {{.project_name}}_job:
+        name: {{.project_name}}_job
+
+        schedule:
+          quartz_cron_expression: '0 0 8 * * ?'
+          timezone_id: America/Sao_Paulo
+
+        email_notifications:
+            on_failure:
+                - {{.databricks_username}}
+
+        tasks:
+          - task_key: task_1
+            job_cluster_key: job_cluster
+            notebook_task:
+              notebook_path: ../src/task_1.py
+              base_parameters:
+                window: 15
+
+          - task_key: task_2
+            depends_on:
+                - task_key: task_1
+            job_cluster_key: job_cluster
+            notebook_task:
+              notebook_path: ../src/task_2.py
+
+        job_clusters:
+          - job_cluster_key: job_cluster
+            new_cluster:
+              policy_id: ${var.policy_id}
+              spark_version: 15.4.x-cpu-ml-scala2.12
+              node_type_id: i3.xlarge
+              aws_attributes:
+                first_on_demand: 1              # Must be at least 1, per policy
+                availability: "SPOT_WITH_FALLBACK"  # Matches the policy fixed value
+              autoscale:
+                  min_workers: 1
+                  max_workers: 1  # Set max_workers to 1 to enforce a single-node cluster
